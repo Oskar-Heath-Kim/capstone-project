@@ -53,4 +53,3 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 createPlayer()
 setTilemap()
 multilights.toggleLighting(true)
-multilights.addLightSource(player)
