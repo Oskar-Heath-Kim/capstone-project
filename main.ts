@@ -4,9 +4,9 @@ namespace SpriteKind {
 }
 
 const defaultPlayerHitpoints = 3
-const gravity = 1000 //May change later
+const gravity = 1000
 const playerHorizontalSpeed = 100
-const playerVerticalSpeed = 0 //They shouldn't be able to fly! This is nessicary to implement a jumping function.
+const playerVerticalSpeed = 0 
 const maxJumps = 2
 const jumpVertical = 325
 const animationSpeedRight = 100
@@ -31,6 +31,9 @@ let leverFlicked = false
 let level = 1
 let sniper: Sprite = null
 let projectile: Sprite = null
+let healthBar: StatusBarSprite
+let enemyImages = [assets.image`sniper`,assets.image`bat`]
+let torch: Sprite = null
 //Classes========================================================
 
 class Hero extends sprites.ExtendableSprite {
@@ -41,6 +44,7 @@ class Hero extends sprites.ExtendableSprite {
     }
     hit(points: number): void {
         this.hitpoints -= points
+        updateHealth(this.hitpoints)
         if (this.hitpoints <= 0) {
             game.gameOver(false)
         }
@@ -97,7 +101,10 @@ function createPlayer(): void {
     multilights.toggleLighting(true)
     multilights.addLightSource(player)
     multilights.bandWidthOf(player, visabilty)
-    let healthBar = statusbars.create(healthBarWidth, healthBarHeight,SpriteKind.StatusBar)
+    healthBar = statusbars.create(healthBarWidth, healthBarHeight,SpriteKind.StatusBar)
+    healthBar.attachToSprite(player)
+    healthBar.max = 3 * 33
+    healthBar.value = 3 * 33
     healthBar.attachToSprite(player)
     let heroSpawn = tiles.getTilesByType(assets.tile`heroSpawn`)
     for (let j = 0; j < heroSpawn.length; j++) {
@@ -109,16 +116,22 @@ function createPlayer(): void {
 function createTorch(): void{
     let placeHolder = tiles.getTilesByType(assets.tile`diamondTile`)
     for(let i = 0; i < placeHolder.length; i++){
-        let torch = new Torch(assets.image`torch`,SpriteKind.brick,3) //May need to make a class, or namespace, it's a player to it doesn't have an overlap
+        torch = new Torch(assets.image`torch`,SpriteKind.brick,3) //May need to make a class, or namespace, it's a player to it doesn't have an overlap
         console.log("torch created")
         tiles.placeOnTile(torch,placeHolder[i])
         multilights.addLightSource(torch)
         multilights.bandWidthOf(torch, torchlight)
+        characterAnimations.loopFrames(torch, [
+            assets.image`torch`,
+            assets.image`torch0`,
+            assets.image`torch1`
+        ], 400, characterAnimations.rule(Predicate.NotMoving))
     }
 }
 
 function setTilemap(): void {
-    if (level== 1){tiles.setCurrentTilemap(assets.tilemap`level`)}
+    if (level== 1){tiles.setCurrentTilemap(assets.tilemap`level`)
+    }
     if (level == 2) {
         tiles.setCurrentTilemap(assets.tilemap`level2`)  
         createSniper()
@@ -133,7 +146,7 @@ function setTilemap(): void {
 }
 
 function createSniper(): void{
-    sniper = new Enemy(assets.image`sniper`,SpriteKind.Enemy,defaultSniperHitpoints)
+    sniper = new Enemy(enemyImages[0],SpriteKind.Enemy,defaultSniperHitpoints)
     let sniperPlaceHolder = tiles.getTilesByType(assets.tile`sniper`)
     for(let j = 0; j < sniperPlaceHolder.length; j++){
         tiles.placeOnTile(sniper,sniperPlaceHolder[j])
@@ -150,6 +163,9 @@ function createProjectile(): void{
     multilights.bandWidthOf(projectile,projectileLight)
 }
 
+function updateHealth (hp: number) {
+    healthBar.value = hp * 33
+}
 //Event-Handlers=================================================
 game.onUpdate(function () {
     if (player.isHittingTile(CollisionDirection.Bottom)) {
@@ -171,14 +187,26 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 
 scene.onOverlapTile(SpriteKind.Player, assets.tile`lever`, function(sprite: Sprite, location: tiles.Location) {
     game.showLongText("You hear a faint rumbling", DialogLayout.Bottom)
-    let doorCoords = tiles.getTileLocation(31, 11)
-    tiles.setTileAt(location, assets.tile`leverFlicked`)
-    leverFlicked = true
-    tiles.setTileAt(doorCoords, assets.tile`doorOpen`)  
+    if(level == 1){
+        let doorCoords = tiles.getTileLocation(31, 11)
+        tiles.setTileAt(location, assets.tile`leverFlicked`)
+        leverFlicked = true
+        tiles.setTileAt(doorCoords, assets.tile`doorOpen`)
+    }
+    if(level == 2){
+        let doorCoords = tiles.getTileLocation(14, 3)
+        tiles.setTileAt(location, assets.tile`leverFlicked`)
+        leverFlicked = true
+        tiles.setTileAt(doorCoords, assets.tile`doorOpen`)
+    }
 })
 
 scene.onOverlapTile(SpriteKind.Player, assets.tile`doorOpen`, function(sprite: Sprite, location: tiles.Location) {
+    if (level == 2) {
+        game.gameOver(true)
+    }
     level += 1
+    leverFlicked = false
     setTilemap()
 })
 
@@ -194,7 +222,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function(sprite: Her
 
 //Main===========================================================
 setTilemap()
+//game.showLongText("Follow the lights and escape the dungeon", DialogLayout.Bottom)
 createPlayer()
+game.showLongText("Follow the lights and escape the dungeon", DialogLayout.Bottom)
 createTorch()
 
 characterAnimations.loopFrames(player, [
@@ -214,3 +244,4 @@ characterAnimations.loopFrames(player, [
 characterAnimations.loopFrames(player,[
     assets.image`hero`
 ],animationSpeedIdle,Predicate.NotMoving)
+

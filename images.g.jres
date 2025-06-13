@@ -59,6 +59,21 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "projectile"
     },
+    "image13": {
+        "data": "hwQQABAAAAAA//8PwPwPAPDP/8+8u/sA//zPu7Ecuw/PzDyzu/u7+88AzLu7+7v7AADAvLv7u/sAADyzsRy7+wAAzLu7u7v7AADAzLu7u/sAAP+/vLu7/AD/vLvMu8sP8LzLzMz//wDAy7vMDMAMAL/LvMsAAAwAv8zMDAAAAADPAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "bat"
+    },
+    "image14": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVVVVAAAAUFUlIlJVAABQIiIiIiIAAFAiIkQUIu4OUCJCRCFS7g5QVSIkIlIAAABQJSIiUgAAAABVVVUFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "torch0"
+    },
+    "image15": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAVVVVAAAAUFUlIlJVAABQIiIiIiIAAFAiIkQUIu4OUCJCRCFS7g5QVSIkIlIAAABQJSIiUgAABQBVVVUFAAAAAAAAAAAAAFBQAAAAAAAAAABQAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "torch1"
+    },
     "anim1": {
         "namespace": "myAnimations",
         "id": "anim1",
