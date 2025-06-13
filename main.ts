@@ -97,8 +97,8 @@ function createPlayer(): void {
     multilights.toggleLighting(true)
     multilights.addLightSource(player)
     multilights.bandWidthOf(player, visabilty)
-    statusbars.create(healthBarWidth, healthBarHeight,SpriteKind.StatusBar)
-
+    let healthBar = statusbars.create(healthBarWidth, healthBarHeight,SpriteKind.StatusBar)
+    healthBar.attachToSprite(player)
     let heroSpawn = tiles.getTilesByType(assets.tile`heroSpawn`)
     for (let j = 0; j < heroSpawn.length; j++) {
         tiles.placeOnTile(player, heroSpawn[j])
